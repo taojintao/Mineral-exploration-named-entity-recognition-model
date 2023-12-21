@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 
 def seed_everything(seed=42):
     """
-    设置整个开发环境的seed
+    Set the seed for the entire development environment.
     :param seed:
     :return:
     """
@@ -83,11 +83,11 @@ def run():
     # set the logger
     utils.set_logger(config.log_dir)
     logging.info("device: {}".format(config.device))
-    # 处理数据，分离文本和标签
+    # process the data, separating the text and labels
     processor = Processor(config)
     processor.process()
     logging.info("--------Process Done!--------")
-    # 加载训练集和验证集
+    # load train set and dev set
     word_train, word_dev, label_train, label_dev = load_data()
     # build dataset
     train_dataset = NERDataset(word_train, label_train, config)

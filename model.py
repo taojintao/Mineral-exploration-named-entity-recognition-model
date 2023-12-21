@@ -20,7 +20,7 @@ class BertNER(BertPreTrainedModel):
             dropout=config.lstm_dropout_prob,
             bidirectional=True
         )
-        #保证max_seq_len保持不变
+        #ensure that the max_seq_len remains unchanged
         self.conv1ds=nn.ModuleList([
             nn.Sequential(
                 nn.Conv1d(in_channels=config.hidden_size,out_channels=config.cnn_embedding_size,kernel_size=h,
@@ -48,10 +48,10 @@ class BertNER(BertPreTrainedModel):
                             head_mask=head_mask,
                             inputs_embeds=inputs_embeds)
         sequence_output = outputs[0]
-        # 去除[CLS]标签等位置，获得与label对齐的pre_label表示
+        # Remove [CLS] and [SEP] labels, obtaining pre_labels aligned with the actual labels.
         origin_sequence_output = [layer[starts.nonzero().squeeze(1)]
                                   for layer, starts in zip(sequence_output, input_token_starts)]
-        # 将sequence_output的pred_label维度padding到最大长度
+        # Pad the dimensions of the pred_label in the sequence_output to the maximum length
         padded_sequence_output = pad_sequence(origin_sequence_output, batch_first=True)
         #origin_sequence_output = padded_sequence_output
         #ATTENTION
@@ -72,7 +72,7 @@ class BertNER(BertPreTrainedModel):
         output_cat=torch.cat([cnn_output,lstm_output,attn_output],dim=2)
         output_cat=self.dropout(output_cat)
 
-        # 得到判别值
+        # Obtain the discriminative values
         logits = self.classifier(output_cat)
         outputs = (logits,)
         if labels is not None:

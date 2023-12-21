@@ -35,7 +35,7 @@ class NERDataset(Dataset):
             for token in line:
                 words.append(self.tokenizer.tokenize(token))
                 word_lens.append(len(token))
-            # 变成单个字的列表，开头加上[CLS]
+            # add [CLS]
             words = ['[CLS]'] + [item for token in words for item in token]
             token_start_idxs = 1 + np.cumsum([0] + word_lens[:-1])
             sentences.append((self.tokenizer.convert_tokens_to_ids(words), token_start_idxs))
@@ -59,9 +59,9 @@ class NERDataset(Dataset):
     def collate_fn(self, batch):
         """
         process batch data, including:
-            1. padding: 将每个batch的data padding到同一长度（batch中最长的data长度,也可使用指定的max_seq_len）
-            2. aligning: 找到每个sentence sequence里面有label项，文本与label对齐
-            3. tensor：转化为tensor
+            1. padding: Pad each batch of data to the same length (the length of the longest data in the batch, or you can use a specified max_seq_len)
+            2. aligning: identify the positions in each sentence sequence where there are label items, ensuring alignment between text and labels.
+            3. tensor：convert data to tensor
         """
         sentences = [x[0] for x in batch]
         labels = [x[1] for x in batch]
@@ -77,7 +77,7 @@ class NERDataset(Dataset):
 
         max_label_len = 0
 
-        # padding data 初始化
+        # initialize padding data
         batch_data = self.word_pad_idx * np.ones((batch_len, max_len))
         batch_label_starts = []
 
@@ -88,7 +88,7 @@ class NERDataset(Dataset):
                 batch_data[j][:] = sentences[j][0][:max_len]
             else:
                 batch_data[j][:cur_len] = sentences[j][0]
-            # 找到有标签的数据的index（[CLS]不算）
+            # find the index of data with labels excluding [CLS]
             label_start_idx = sentences[j][-1]
             label_starts = np.zeros(max_len)
             label_starts[[idx for idx in label_start_idx if idx < max_len]] = 1

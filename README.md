@@ -2,8 +2,7 @@
 
 
 ## Dataset
-使用了自己创建的中文锂矿命名实体识别标注语料, train.bio、dev.bio、test.bio文件，
-每个文件有两列，格式如下：
+We used a Chinese lithium deposit named entity recognition corpus created by ourselves, which includes train.bio, dev.bio, and test.bio files. Each file consists of two columns in the following format:
 ```
 磷 B-MINE
 灰 I-MINE
@@ -30,11 +29,11 @@
 
 
 ## Pretrained Model
-需要提前下载bert-base-chinese预训练模型，将
+You need to download the pre-trained model bert-base-chinese，and place
 - pytorch_model.bin
 - vocab.txt
 
-两个文件放置在./pretrained_bert_models/bert-base-chinese文件夹下
+these two files in ./pretrained_bert_models/bert-base-chinese.
 
 
 ## Requirements
@@ -46,11 +45,11 @@
 - transformers==3.1.0
 
 ## Usage
-1. 运行encode_labels.py生成实体类型句子的编码文件；
-2. 运行run.py进行训练和测试。
+1. Run encode_labels.py to generate the encoding file for sentences with entity types.
+2. Run run.py for training and testing.
 
 ## References
-部分的代码编写参考了
+Partial code implementation was referenced from
 - [CLUENER](https://github.com/CLUEbenchmark/CLUENER2020) 
 - [LEBERT-NER-Chinese](https://github.com/yangjianxin1/LEBERT-NER-Chinese) 
 

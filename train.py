@@ -13,7 +13,7 @@ from transformers import BertTokenizer
 def train_epoch(train_loader, model, optimizer, scheduler, epoch, writer,label_embedding):
     # set model to training mode
     model.train()
-    # step number in one epoch: 336
+    # step number in one epoch
     train_losses = 0
     for idx, batch_samples in enumerate(tqdm(train_loader)):
         batch_data, batch_token_starts, batch_labels = batch_samples

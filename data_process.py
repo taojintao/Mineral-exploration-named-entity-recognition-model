@@ -18,10 +18,10 @@ class Processor:
     def preprocess(self, mode):
         """
         params:
-            将bio文件每一行中的文本和标签分离出来，存储为words和labels列表
+            separate the text and labels in each line of the BIO file, and store them as words and labels lists
         examples:
-            words示例：['生', '生', '不', '息', 'C', 'S', 'O', 'L']
-            labels示例：['O', 'O', 'O', 'O', 'B-game', 'I-game', 'I-game', 'I-game']
+            words：['生', '生', '不', '息', 'C', 'S', 'O', 'L']
+            labels：['O', 'O', 'O', 'O', 'B-game', 'I-game', 'I-game', 'I-game']
         """
         input_dir = self.data_dir + str(mode) + '.bio'
         output_dir = self.data_dir + str(mode) + '.npz'
@@ -46,7 +46,7 @@ class Processor:
                     word, label = line.split()
                     words.append(word)
                     labels.append(label)
-        # 保存成二进制文件
+        # save as a binary file
         np.savez_compressed(output_dir, words=word_list, labels=label_list)
         logging.info("--------{} data process DONE!--------".format(mode))
 

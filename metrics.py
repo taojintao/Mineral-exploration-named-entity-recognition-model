@@ -140,7 +140,7 @@ def f1_score(y_true, y_pred, mode='dev'):
     r_all = nb_correct / nb_true if nb_true > 0 else 0
     score_all = 2 * p_all * r_all / (p_all + r_all) if p_all + r_all > 0 else 0
     if mode == 'dev':
-        return p_all, r_all, score_all # score改为[p,r,score]
+        return p_all, r_all, score_all # change score to [p,r,score]
     else:
         f_score = {}
         for label in config.labels:
@@ -159,13 +159,13 @@ def f1_score(y_true, y_pred, mode='dev'):
             p_label = nb_correct_label / nb_pred_label if nb_pred_label > 0 else 0
             r_label = nb_correct_label / nb_true_label if nb_true_label > 0 else 0
             score_label = 2 * p_label * r_label / (p_label + r_label) if p_label + r_label > 0 else 0
-            f_score[label] = [p_label,r_label,score_label] #score_label改为[p_label,r_label,score_label]
-        return f_score, p_all, r_all, score_all  # score改为p,r,score
+            f_score[label] = [p_label,r_label,score_label] #change score_label to [p_label,r_label,score_label]
+        return f_score, p_all, r_all, score_all  # chagne score to p,r,score
 
 
 def bad_case(y_true, y_pred, data):
     if not os.path.exists(config.case_dir):
-        os.system(r"touch {}".format(config.case_dir))  # 调用系统命令行来创建文件
+        os.system(r"touch {}".format(config.case_dir))  # invoke the system command line to create a file
     with open(config.case_dir, 'w',encoding='utf-8') as output:
         for idx, (t, p) in enumerate(zip(y_true, y_pred)):
             if t == p:
