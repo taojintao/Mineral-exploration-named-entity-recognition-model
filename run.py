@@ -114,6 +114,8 @@ def run():
         bert_optimizer = list(model.bert.named_parameters())
         attention_optimizer= list(model.multiheadAttn.named_parameters())
         lstm_optimizer = list(model.bilstm.named_parameters())
+        start_optimizer = list(model.start.named_parameters())
+        end_optimizer = list(model.end.named_parameters())
         classifier_optimizer = list(model.classifier.named_parameters())
         no_decay = ['bias', 'LayerNorm.bias', 'LayerNorm.weight']
         optimizer_grouped_parameters = [
@@ -132,6 +134,16 @@ def run():
             #  'lr': config.learning_rate * 5, 'weight_decay': config.weight_decay},
             # {'params': [p for n, p in attention_optimizer if any(nd in n for nd in no_decay)],
             #  'lr': config.learning_rate * 5, 'weight_decay': 0.0},
+            #start_optimizer
+            {'params': [p for n, p in start_optimizer if not any(nd in n for nd in no_decay)],
+             'lr': config.learning_rate * 5, 'weight_decay': config.weight_decay},
+            {'params': [p for n, p in start_optimizer if any(nd in n for nd in no_decay)],
+             'lr': config.learning_rate * 5, 'weight_decay': 0.0},
+            #end_optimizer
+            {'params': [p for n, p in end_optimizer if not any(nd in n for nd in no_decay)],
+             'lr': config.learning_rate * 5, 'weight_decay': config.weight_decay},
+            {'params': [p for n, p in end_optimizer if any(nd in n for nd in no_decay)],
+             'lr': config.learning_rate * 5, 'weight_decay': 0.0},
             #classifier_optimizer
             {'params': [p for n, p in classifier_optimizer if not any(nd in n for nd in no_decay)],
              'lr': config.learning_rate * 5, 'weight_decay': config.weight_decay},

@@ -18,10 +18,10 @@ class Processor:
     def preprocess(self, mode):
         """
         params:
-            separate the text and labels in each line of the BIO file, and store them as words and labels lists
+            将bio文件每一行中的文本和标签分离出来，存储为words和labels列表
         examples:
-            words：['生', '生', '不', '息', 'C', 'S', 'O', 'L']
-            labels：['O', 'O', 'O', 'O', 'B-game', 'I-game', 'I-game', 'I-game']
+            words示例：['生', '生', '不', '息', 'C', 'S', 'O', 'L']
+            labels示例：['O', 'O', 'O', 'O', 'B-game', 'I-game', 'I-game', 'I-game']
         """
         input_dir = self.data_dir + str(mode) + '.bio'
         output_dir = self.data_dir + str(mode) + '.npz'

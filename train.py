@@ -13,15 +13,15 @@ from transformers import BertTokenizer
 def train_epoch(train_loader, model, optimizer, scheduler, epoch, writer,label_embedding):
     # set model to training mode
     model.train()
-    # step number in one epoch
+    # step number in one epoch: 336
     train_losses = 0
     for idx, batch_samples in enumerate(tqdm(train_loader)):
-        batch_data, batch_token_starts, batch_labels = batch_samples
+        batch_data, batch_token_starts, batch_labels, batch_starts, batch_ends = batch_samples
         batch_masks = batch_data.gt(0)  # get padding mask
         label_embedding_bt=label_embedding.repeat_interleave(repeats=batch_data.shape[0], dim=0)
         # compute model output and loss
         loss = model((batch_data, batch_token_starts),
-                     token_type_ids=None, attention_mask=batch_masks, labels=batch_labels,label_embedding=label_embedding_bt)[0]
+                     token_type_ids=None, attention_mask=batch_masks, label_data=(batch_labels,batch_starts,batch_ends),label_embedding=label_embedding_bt)[0]
         train_losses += loss.item()
         # clear previous gradients, compute gradients of all variables wrt loss
         model.zero_grad()
@@ -90,7 +90,7 @@ def evaluate(dev_loader, model, label_embedding, mode='dev'):
 
     with torch.no_grad():
         for idx, batch_samples in enumerate(dev_loader):
-            batch_data, batch_token_starts, batch_tags = batch_samples
+            batch_data, batch_token_starts, batch_tags, batch_starts, batch_ends = batch_samples
             label_embedding_bt=label_embedding.repeat_interleave(repeats=batch_data.shape[0], dim=0)
             if mode == 'test':
                 sent_data.extend([[tokenizer.convert_ids_to_tokens(idx.item()) for idx in indices
@@ -99,7 +99,7 @@ def evaluate(dev_loader, model, label_embedding, mode='dev'):
             label_masks = batch_tags.gt(-1)  # get padding mask, gt(x): get index greater than x
             # compute model output and loss
             loss = model((batch_data, batch_token_starts),
-                         token_type_ids=None, attention_mask=batch_masks, labels=batch_tags,label_embedding=label_embedding_bt)[0]
+                         token_type_ids=None, attention_mask=batch_masks, label_data=(batch_tags,batch_starts, batch_ends),label_embedding=label_embedding_bt)[0]
             dev_losses += loss.item()
             # (batch_size, max_len, num_labels)
             batch_output = model((batch_data, batch_token_starts),
@@ -132,6 +132,5 @@ def evaluate(dev_loader, model, label_embedding, mode='dev'):
         metrics['f1'] = f1
     metrics['loss'] = float(dev_losses) / len(dev_loader)
     return metrics
-
 
 
